@@ -1,0 +1,17 @@
+*{
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+.content{
+  height: 80vh;
+}
+.navbar{
+  background-color: rgba(169, 169, 220, 0.345) !important;
+}
+.register-page{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 90vh;
+}
