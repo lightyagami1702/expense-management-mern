@@ -1,1 +1,3 @@
-currently the basic work is done like user creation, login logout etc
+-currently the basic work is done like user creation, login logout etc
+-created the transaction model, controller and routes
+-created the basic ui for the transaction model
