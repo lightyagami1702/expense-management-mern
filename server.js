@@ -4,6 +4,7 @@ import morgan from "morgan";
 import dotenv from "dotenv";
 import { connectDB } from "./config/connectDB.js";
 import userRoute from "./routes/userRoute.js";
+import transactionRoute from "./routes/transactionRoutes.js";
 // config dot env
 dotenv.config();
 //connect database
@@ -15,8 +16,11 @@ app.use(morgan("dev"));
 app.use(express.json());
 app.use(cors());
 // routes
+//user routes
 // app.use("/api/v1/users", require("./routes/userRoute.js"));
 app.use("/api/v1/users", userRoute);
+//transaction routes
+app.use("api/v1/transactions", transactionRoute);
 //port
 const PORT = 8080 || process.env.PORT;
 //listen server
