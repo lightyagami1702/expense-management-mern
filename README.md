@@ -1,3 +1,7 @@
 -currently the basic work is done like user creation, login logout etc
 -created the transaction model, controller and routes
 -created the basic ui for the transaction model
+-transaction connection between frontend and backend added
+-filters system added to improve expense and income management
+-analytical page added so graphically view the data
+-more analytical features added
