@@ -4,7 +4,7 @@
   box-sizing: border-box;
 }
 .content{
-  height: 80vh;
+  height: 100vh;
 }
 .navbar{
   background-color: rgba(169, 169, 220, 0.345) !important;
