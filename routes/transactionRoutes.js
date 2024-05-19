@@ -9,5 +9,5 @@ const router = express.Router();
 //add transaction
 router.post("/add-transaction", addTransaction);
 //get transaction
-router.get("/get-transaction", getAllTransaction);
+router.post("/get-transaction", getAllTransaction);
 export default router;

@@ -2,7 +2,10 @@ import { transactionModel } from "../models/transactionModel.js";
 
 export const getAllTransaction = async (req, res) => {
   try {
-    const transactions = await transactionModel.find({});
+    const transactions = await transactionModel.find({
+      userid: req.body.userid,
+    });
+    console.log(req.body.userid);
     res.status(200).json(transactions);
   } catch (error) {
     console.log(error);

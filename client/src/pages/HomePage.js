@@ -1,15 +1,37 @@
 import React, { useState } from "react";
-import { Form, Input, Modal, Select } from "antd";
-import Layout from "../components/Layouts/Layout";
+import { Form, Input, Modal, Select, message } from "antd";
+import axios from "axios";
+import Layout from "../components/Layouts/Layout.js";
+import Spinner from "../components/Spinner.js";
 
 const HomePage = () => {
   const [showModal, setShowModal] = useState(false);
+  const [loading, setLoading] = useState(false);
   // form handling
-  const handleSubmit = (values) => {
-    console.log(values);
+  const handleSubmit = async (values) => {
+    try {
+      const user = JSON.parse(localStorage.getItem("user"));
+      // console.log(user);
+      setLoading(true);
+      // const id = user.user._id;
+      // console.log(id);
+      await axios.post("/transactions/add-transaction", {
+        ...values,
+        userid: user.user._id,
+      });
+      // transactions
+      setLoading(false);
+      message.success("transaction added successfully");
+      setShowModal(false);
+    } catch (error) {
+      setLoading(false);
+      console.log(error);
+      message.error("Failed to add Transaction");
+    }
   };
   return (
     <Layout>
+      {loading && <Spinner />}
       <div className="filters">
         <div>range filter </div>
         <div>
