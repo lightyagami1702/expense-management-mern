@@ -1,12 +1,72 @@
-import React, { useState } from "react";
-import { Form, Input, Modal, Select, message } from "antd";
+import React, { useState, useEffect } from "react";
+import { Form, Input, Modal, Select, Table, message, DatePicker } from "antd";
 import axios from "axios";
+import { UnorderedListOutlined, AreaChartOutlined } from "@ant-design/icons";
 import Layout from "../components/Layouts/Layout.js";
 import Spinner from "../components/Spinner.js";
-
+// import { text } from "express";
+import moment from "moment";
+import Analytics from "../components/Analytics.js";
+const { RangePicker } = DatePicker;
 const HomePage = () => {
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [allTransaction, setAllTransaction] = useState([]);
+  const [frequency, setFrequency] = useState("7");
+  const [selectedDate, setSelectedate] = useState([]);
+  const [type, setType] = useState("all");
+  const [viewData, setViewData] = useState("table");
+  //table data
+  const columns = [
+    {
+      title: "Date",
+      dataIndex: "date",
+      render: (text) => <span>{moment(text).format("YYYY-MM-DD")}</span>,
+    },
+    {
+      title: "Amount",
+      dataIndex: "amount",
+    },
+    {
+      title: "Type",
+      dataIndex: "type",
+    },
+    {
+      title: "Category",
+      dataIndex: "category",
+    },
+    {
+      title: "Reference",
+      dataIndex: "reference",
+    },
+    {
+      title: "Actions",
+    },
+  ];
+  // get all transactions
+
+  //useEffect Hook
+  useEffect(() => {
+    const getAllTransaction = async () => {
+      try {
+        const user = JSON.parse(localStorage.getItem("user"));
+        setLoading(true);
+        const res = await axios.post("/transactions/get-transaction", {
+          userid: user.user._id,
+          frequency,
+          selectedDate,
+          type,
+        });
+        setLoading(false);
+        setAllTransaction(res.data);
+        console.log(res.data);
+      } catch (error) {
+        console.log(error);
+        message.error("Fetch Issue with transaction");
+      }
+    };
+    getAllTransaction();
+  }, [frequency, selectedDate, type]);
   // form handling
   const handleSubmit = async (values) => {
     try {
@@ -18,6 +78,7 @@ const HomePage = () => {
       await axios.post("/transactions/add-transaction", {
         ...values,
         userid: user.user._id,
+        frequency,
       });
       // transactions
       setLoading(false);
@@ -33,7 +94,59 @@ const HomePage = () => {
     <Layout>
       {loading && <Spinner />}
       <div className="filters">
-        <div>range filter </div>
+        <div>
+          <h6>Select Frequency</h6>
+          <Select
+            value={frequency}
+            onChange={(values) => {
+              setFrequency(values);
+            }}
+          >
+            <Select.Option value="7">Last 1 Week</Select.Option>
+            <Select.Option value="30">Last 1 Month</Select.Option>
+            <Select.Option value="365">Last 1 year</Select.Option>
+            <Select.Option value="custom">Custom</Select.Option>
+          </Select>
+          {frequency === "custom" && (
+            <RangePicker
+              value={selectedDate}
+              onChange={(values) => setSelectedate(values)}
+            />
+          )}
+        </div>
+        <div>
+          <h6>Select Type</h6>
+          <Select
+            value={type}
+            onChange={(values) => {
+              setType(values);
+            }}
+          >
+            <Select.Option value="all">All</Select.Option>
+            <Select.Option value="income">Income</Select.Option>
+            <Select.Option value="expense">Expense</Select.Option>
+          </Select>
+          {frequency === "custom" && (
+            <RangePicker
+              value={selectedDate}
+              onChange={(values) => setSelectedate(values)}
+            />
+          )}
+        </div>
+        <div className="switch-icons">
+          <UnorderedListOutlined
+            className={`mx-2 ${
+              viewData === "table" ? "active-icon" : "inactive-icon"
+            }`}
+            onClick={() => setViewData("table")}
+          />
+          <AreaChartOutlined
+            className={`mx-2 ${
+              viewData === "analytics" ? "active-icon" : "inactive-icon"
+            }`}
+            onClick={() => setViewData("analytics")}
+          />
+        </div>
         <div>
           <button
             className="btn btn-primary"
@@ -42,6 +155,14 @@ const HomePage = () => {
             Add New
           </button>
         </div>
+      </div>
+      <div className="content">
+        {viewData === "table" ? (
+          <Table columns={columns} dataSource={allTransaction} />
+        ) : (
+          <Analytics allTransaction={allTransaction} />
+        )}
+        {/* <Table columns={columns} dataSource={allTransaction} /> */}
       </div>
       <Modal
         title="Add Transaction"
