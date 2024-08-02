@@ -58,7 +58,7 @@ Ensure that MongoDB is running. If you’re using a local MongoDB instance, star
 
 If you’re using MongoDB Atlas, ensure your connection string is correct in the `.env` file.
 
-6. Start the Application
+5. Start the Application
 
 First, start the backend server:
 
